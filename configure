@@ -1,0 +1,235 @@
+#!/bin/bash
+
+###################################################################################
+## Author: Stefan Lörwald, Universität Heidelberg                                ##
+## License: CC BY-NC 4.0 http://creativecommons.org/licenses/by-nc/4.0/legalcode ##
+###################################################################################
+
+# Do not modify this file unless you know exactly what you're doing.
+
+# This script tries to identify the compiler and if mpi is supported
+# arguments are: --compiler=[] --no-mpi
+
+# location of configuration files
+compiler_filename=Makefile_configuration_compiler.mk;
+mpi_filename=Makefile_configuration_mpi.mk;
+
+# the generic header will be extracted from this file!
+header=$(head -9 configure | tail -8);
+
+# detect if the md5 sum is available with md5 or md5sum
+if [ ! $(command -v md5sum 2> /dev/null) == "" ]
+then
+   MD5CHECKER=md5sum;
+else
+   if [ ! $(command -v md5 2> /dev/null) == "" ]
+   then
+      MD5CHECKER=md5;
+   else
+      echo "No way to check for md5 checksum. Please configure the files $(compiler_filename) and $(mpi_filename) manually."
+   fi
+fi
+
+# see if any of the arguments is "--no-mpi"
+try_mpi=1;
+if [ "${1}" == "--no-mpi" ] || [ "${2}" == "--no-mpi" ] || [ "${3}" == "--no-mpi" ] || [ "${4}" == "--no-mpi" ] || [ "${5}" == "--no-mpi" ] || [ "${6}" == "--no-mpi" ] || [ "${7}" == "--no-mpi" ] || [ "${8}" == "--no-mpi" ] || [ "${9}" == "--no-mpi" ]
+then
+   try_mpi=0;
+fi
+
+# determine the MPI command
+if [ ${try_mpi} -eq 1 ]
+then
+   if [ ! $(command -v mpic++ 2> /dev/null) == "" ]
+   then
+      command=mpic++;
+   elif [ ! $(command -v mpicxx 2> /dev/null) == "" ]
+   then
+      command=mpicxx;
+   elif [ ! $(command -v mpicc 2> /dev/null) == "" ]
+   then
+      command=mpicc;
+   else
+      echo "No MPI compiler found. Please enter the MPI compiler invocation command or \"N\" for not using MPI:";
+      read command;
+   fi
+fi
+
+mpi_information="# MPI configuration: the following items must be checked against your MPI installation.
+# Run \"mpic++ --showme:compile\" / \"mpic++ --showme:link\" or similar to identify the compiler
+# options enabled by a call of \"mpic++ foo.cpp\".
+# If your software configuration doesn't support MPI, disable all of the following lines.";
+if [ ${try_mpi} -eq 1 ] && [ ${command} != "N" ]
+then
+   # using the MPI invocation to get compiler flags. This is usually something like g++ -L/mpi/ -lmpi
+   # the correct command is dependent on the MPI distribution. We try a bunch of "show-me" commands.
+   compile_command=$(${command} --show-me:compile 2> /dev/null);
+   compile_command_valid=$?;
+   link_command=$(${command} --show-me:link 2> /dev/null);
+   link_command_valid=$?;
+   generic_command_valid=1;
+   generic_command=$(${command} --show-me 2> /dev/null);
+   if [ $? -gt 0 ]
+   then
+      generic_command=$(${command} --showme 2> /dev/null);
+      if [ $? -gt 0 ]
+      then
+         generic_command=$(${command} --show 2> /dev/null);
+         if [ $? -gt 0 ]
+         then
+            generic_command=$(${command} -show 2> /dev/null);
+            if [ $? -gt 0 ]
+            then
+               generic_command=$(${command} -showme 2> /dev/null);
+               if [ $? -gt 0 ]
+               then
+                  generic_command=$(${command} -compile_info 2> /dev/null);
+                  generic_command_valid=$?;
+               else
+                  generic_command_valid=0;
+               fi
+            else
+               generic_command_valid=0;
+            fi
+         else
+            generic_command_valid=0;
+         fi
+      else
+         generic_command_valid=0;
+      fi
+   else
+      generic_command_valid=0;
+   fi
+   if [ ${compile_command_valid} -eq 0 ] && [ ${link_command_valid} -eq 0 ]
+   then
+      flags_library_headers=$(echo "${compile_command}" | sed 's/\b[^-][^ ]* //' | sed 's/ -l[^ ]*//g' | sed 's/ -Wl,[^ ]*//g' | sed 's/ -L[^ ]*//g');
+      flags_library_objects=$(echo "${link_command}" | sed 's/\b[^-][^ ]* //');
+   elif [ ${generic_command_valid} -eq 0 ]
+   then
+      flags_library_headers=$(echo "${generic_command}" | sed 's/\b[^-][^ ]* //' | sed 's/ -l[^ ]*//g' | sed 's/ -Wl,[^ ]*//g' | sed 's/ -L[^ ]*//g');
+      flags_library_objects=$(echo "${generic_command}" | sed 's/\b[^-][^ ]* //');
+   else
+      echo "Couldn't identify MPI configuration (${command} usually invokes an underlying compiler such as gcc with some flags. This script was not able to identify these flags. Usually, this can be extracted with \"${command} --show\" or a similar command. If you happen to know how to do this with your copy of MPI, please send feedback to the address provided in the README file). Sorry, we cannot continue like this, your only option right now is to run this again with the option \"--no-mpi\".";
+      exit 1;
+   fi
+   # Writing the gathered information to temporary file
+   printf "${header}\n${mpi_information}\n\n" > .tmp_mpi;
+   printf "flags_configuration   += -DMPI_SUPPORT\n" >> .tmp_mpi;
+   printf "flags_library_headers += ${flags_library_headers}\n" >> .tmp_mpi;
+   printf "flags_library_objects += ${flags_library_objects}\n\n" >> .tmp_mpi;
+else
+   # Writing the gathered information to temporary file
+   printf "${header}\n${mpi_information}\n\n" > .tmp_mpi;
+   printf "# flags_configuration   += -DMPI_SUPPORT\n" >> .tmp_mpi;
+   printf "# flags_library_headers +=\n" >> .tmp_mpi;
+   printf "# flags_library_objects +=\n\n" >> .tmp_mpi;
+fi
+if [ $(cat .tmp_mpi | ${MD5CHECKER} | cut -d" " -f1) == $(cat ${mpi_filename} 2> /dev/null | ${MD5CHECKER} | cut -d" " -f1) ]
+then
+   echo "Writing MPI configuration omitted: configuration didn't change.";
+   rm .tmp_mpi;
+else
+   printf "Writing MPI configuration: ";
+   mv .tmp_mpi ${mpi_filename};
+   if [ $? -eq 0 ]
+   then
+      printf "done\n"; 
+   else
+      printf "failed\n";
+      exit 1;
+   fi
+fi
+# MPI configuration is done here.
+
+# look if there is an option specifying the compiler
+if [[ "${1}" == "--compiler="* ]]
+then
+   user_compiler=$(echo "${1}" | cut -d= -f2);
+elif [[ "${2}" == "--compiler="* ]]
+then
+   user_compiler=$(echo "${2}" | cut -d= -f2);
+elif [[ "${3}" == "--compiler="* ]]
+then
+   user_compiler=$(echo "${3}" | cut -d= -f2);
+elif [[ "${4}" == "--compiler="* ]]
+then
+   user_compiler=$(echo "${4}" | cut -d= -f2);
+elif [[ "${5}" == "--compiler="* ]]
+then
+   user_compiler=$(echo "${5}" | cut -d= -f2);
+elif [[ "${6}" == "--compiler="* ]]
+then
+   user_compiler=$(echo "${6}" | cut -d= -f2);
+elif [[ "${7}" == "--compiler="* ]]
+then
+   user_compiler=$(echo "${7}" | cut -d= -f2);
+elif [[ "${8}" == "--compiler="* ]]
+then
+   user_compiler=$(echo "${8}" | cut -d= -f2);
+elif [[ "${9}" == "--compiler="* ]]
+then
+   user_compiler=$(echo "${9}" | cut -d= -f2);
+else
+   user_compiler=;
+fi
+
+# now we try to detect a compatible compiler
+# compilers are tried in the order COMMAND-LINE, g++, clang++, ask user.
+command=;
+gcc_major_version=$(g++ -v 2>&1 | grep 'gcc version' | sed 's/.*version //' | sed 's/ .*//' | cut -d. -f1 && echo '0');
+gcc_major_version=$(echo "${gcc_major_version}" | head -n 1);
+gcc_minor_version=$(g++ -v 2>&1 | grep 'gcc version' | sed 's/.*version //' | sed 's/ .*//' | cut -d. -f2 && echo '0');
+gcc_minor_version=$(echo "${gcc_minor_version}" | head -n 1);
+clang_major_version=$(clang++ -v 2>&1 | grep 'based on LLVM' | sed 's/.*on LLVM //' | cut -c1-3 | cut -d. -f1 && echo '0');
+clang_major_version=$(echo "${clang_major_version}" | head -n 1);
+clang_minor_version=$(clang++ -v 2>&1 | grep 'based on LLVM' | sed 's/.*on LLVM //' | cut -c1-3 | cut -d. -f2 && echo '0');
+clang_minor_version=$(echo "${clang_minor_version}" | head -n 1);
+
+if [ ! ${user_compiler} == "" ]
+then
+   if [ ! $(command -v ${user_compiler} 2> /dev/null) == "" ]
+   then
+      command=${user_compiler};
+   else
+      echo "Sorry, cannot use \"${user_compiler}\" as a compiler. Contact us via the address provided in the README file if this seems weird to you.";
+   fi
+elif [ ! $(command -v g++ 2> /dev/null) == "" ] && [ ${gcc_major_version} -ge 4 ] && ([ ${gcc_major_version} -gt 4 ] || [ ${gcc_minor_version} -ge 7 ]); # g++ is compatible since g++-4.7
+then
+   command=g++;
+elif [ ! $(command -v clang++ 2> /dev/null) == "" ] && [ ${clang_major_version} -ge 3 ] && ([ ${clang_major_version} -gt 3 ] || [ ${clang_minor_version} -ge 4 ]); # clang++ is compatible since clang++-3.4
+then
+   command=clang++;
+else
+   echo "No compatible compiler found. Please enter the compiler invocation command:";
+   read command;
+   if [ ! $(command -v ${command} 2> /dev/null) == "" ]
+   then
+      echo "This compiler is not supported. If the build is successful anyway, please contact us via the address provided in the README file.";
+   else
+      echo "Sorry, we couldn't find your compiler.";
+      exit 1;
+   fi
+fi
+
+# Writing the gathered information to temporary file
+printf "${header}\n\n" > .tmp_compiler;
+printf "COMPILER = ${command}\n" >> .tmp_compiler;
+printf "LINKER = \$(COMPILER)\n\n" >> .tmp_compiler;
+
+# Writing to actual file (if necessary)
+if [ $(cat .tmp_compiler | ${MD5CHECKER} | cut -d" " -f1) == $(cat ${compiler_filename} 2> /dev/null | ${MD5CHECKER} | cut -d" " -f1) ]
+then
+   echo "Writing compiler configuration omitted: configuration didn't change.";
+   rm .tmp_compiler;
+else
+   printf "Writing compiler configuration: ";
+   mv .tmp_compiler ${compiler_filename};
+   if [ $? -eq 0 ]
+   then
+      printf "done\n"; 
+   else
+      printf "failed\n";
+      exit 1;
+   fi
+fi
+

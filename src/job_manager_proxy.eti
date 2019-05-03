@@ -1,0 +1,46 @@
+
+//-------------------------------------------------------------------------------//
+// Author: Stefan Lörwald, Universität Heidelberg                                //
+// License: CC BY-NC 4.0 http://creativecommons.org/licenses/by-nc/4.0/legalcode //
+//-------------------------------------------------------------------------------//
+
+#include <cstdint>
+
+#ifdef COMPILE_TEMPLATE_JOB_MANAGER_PROXY
+   #define EXTERN
+#else
+   #define EXTERN extern
+#endif
+
+#ifndef NO_FLEXIBILITY
+   #ifdef INT16_MIN
+      #define Integer int16_t
+      #include "job_manager_proxy.beti"
+      #undef Integer
+   #endif
+   #ifdef INT32_MIN
+      #define Integer int32_t
+      #include "job_manager_proxy.beti"
+      #undef Integer
+   #endif
+   #ifdef INT64_MIN
+      #define Integer int64_t
+      #include "job_manager_proxy.beti"
+      #undef Integer
+   #endif
+   #include "big_integer.h"
+   #define Integer panda::BigInteger
+   #include "job_manager_proxy.beti"
+   #undef Integer
+   #include "safe_integer.h"
+   #define Integer panda::SafeInteger
+   #include "job_manager_proxy.beti"
+   #undef Integer
+#else
+   #define Integer int
+   #include "job_manager_proxy.beti"
+   #undef Integer
+#endif
+
+#undef EXTERN
+

@@ -1,0 +1,23 @@
+
+//-------------------------------------------------------------------------------//
+// Author: Stefan Lörwald, Universität Heidelberg                                //
+// License: CC BY-NC 4.0 http://creativecommons.org/licenses/by-nc/4.0/legalcode //
+//-------------------------------------------------------------------------------//
+
+#ifndef EXTERN
+   #error EXTERN must be defined
+#endif
+
+#ifndef Integer
+   #error Integer must be defined
+#endif
+
+namespace panda
+{
+   namespace algorithm
+   {
+      EXTERN template Integer gcd(Integer, Integer) noexcept;
+      EXTERN template Integer lcm(Integer, Integer) noexcept;
+   }
+}
+

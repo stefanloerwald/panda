@@ -1,0 +1,19 @@
+
+//-------------------------------------------------------------------------------//
+// Author: Stefan Lörwald, Universität Heidelberg                                //
+// License: CC BY-NC 4.0 http://creativecommons.org/licenses/by-nc/4.0/legalcode //
+//-------------------------------------------------------------------------------//
+
+#ifndef EXTERN
+   #error EXTERN must be defined
+#endif
+
+#ifndef Integer
+   #error Integer must be defined
+#endif
+
+EXTERN template panda::Matrix<int> panda::cast<int, Integer, 0>(const panda::Matrix<Integer>&);
+EXTERN template panda::Matrix<Integer> panda::cast<Integer, int, 0>(const panda::Matrix<int>&);
+EXTERN template panda::Row<int> panda::cast<int, Integer, 0>(const panda::Row<Integer>&);
+EXTERN template panda::Row<Integer> panda::cast<Integer, int, 0>(const panda::Row<int>&);
+

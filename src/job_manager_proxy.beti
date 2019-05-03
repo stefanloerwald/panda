@@ -1,0 +1,27 @@
+
+//-------------------------------------------------------------------------------//
+// Author: Stefan Lörwald, Universität Heidelberg                                //
+// License: CC BY-NC 4.0 http://creativecommons.org/licenses/by-nc/4.0/legalcode //
+//-------------------------------------------------------------------------------//
+
+#ifndef EXTERN
+   #error EXTERN must be defined
+#endif
+
+#ifndef Integer
+   #error Integer must be defined
+#endif
+
+namespace panda
+{
+   EXTERN template class JobManagerProxy<Integer, tag::facet>;
+   EXTERN template void JobManagerProxy<Integer, tag::facet>::put(const Matrix<Integer>&) const;
+   EXTERN template Row<Integer> JobManagerProxy<Integer, tag::facet>::get() const;
+   EXTERN template JobManagerProxy<Integer, tag::facet>::JobManagerProxy(const Names&, const int, const int);
+
+   EXTERN template class JobManagerProxy<Integer, tag::vertex>;
+   EXTERN template void JobManagerProxy<Integer, tag::vertex>::put(const Matrix<Integer>&) const;
+   EXTERN template Row<Integer> JobManagerProxy<Integer, tag::vertex>::get() const;
+   EXTERN template JobManagerProxy<Integer, tag::vertex>::JobManagerProxy(const Names&, const int, const int);
+}
+

@@ -1,0 +1,21 @@
+
+//-------------------------------------------------------------------------------//
+// Author: Stefan Lörwald, Universität Heidelberg                                //
+// License: CC BY-NC 4.0 http://creativecommons.org/licenses/by-nc/4.0/legalcode //
+//-------------------------------------------------------------------------------//
+
+#ifdef COMPILE_TEMPLATE_INPUT_CONSTRAINT
+   #define EXTERN
+#else
+   #define EXTERN extern
+#endif
+
+#define CONSTRAINT_TYPE panda::ConstraintType::Equation
+#include "input_constraint.beti"
+#undef CONSTRAINT_TYPE
+#define CONSTRAINT_TYPE panda::ConstraintType::Inequality
+#include "input_constraint.beti"
+#undef CONSTRAINT_TYPE
+
+#undef EXTERN
+

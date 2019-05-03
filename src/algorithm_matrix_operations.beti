@@ -1,0 +1,31 @@
+
+//-------------------------------------------------------------------------------//
+// Author: Stefan Lörwald, Universität Heidelberg                                //
+// License: CC BY-NC 4.0 http://creativecommons.org/licenses/by-nc/4.0/legalcode //
+//-------------------------------------------------------------------------------//
+
+#ifndef EXTERN
+   #error EXTERN must be defined
+#endif
+
+#ifndef Integer
+   #error Integer must be defined
+#endif
+
+EXTERN template std::ostream& operator<<(std::ostream&, const panda::Matrix<Integer>&);
+EXTERN template panda::Row<Integer> operator*(const panda::Matrix<Integer>&, const panda::Row<Integer>&);
+
+namespace panda
+{
+   namespace algorithm
+   {
+      EXTERN template void prettyPrint(std::ostream&, const Matrix<Integer>&, const Names&, const char*);
+      EXTERN template Matrix<Integer> transpose(const Matrix<Integer>&);
+      EXTERN template std::size_t dimension(Matrix<Integer>);
+      EXTERN template std::pair<Indices, Indices> gaussianElimination(Matrix<Integer>&);
+      EXTERN template void appendNegativeIdentityMatrix(Matrix<Integer>&);
+      EXTERN template Equations<Integer> extractEquations(Matrix<Integer>);
+      EXTERN template Equations<Integer> extractEquations(Matrix<Integer>&, const Indices&);
+   }
+}
+

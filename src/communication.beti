@@ -1,0 +1,22 @@
+
+//-------------------------------------------------------------------------------//
+// Author: Stefan Lörwald, Universität Heidelberg                                //
+// License: CC BY-NC 4.0 http://creativecommons.org/licenses/by-nc/4.0/legalcode //
+//-------------------------------------------------------------------------------//
+
+#ifndef EXTERN
+   #error EXTERN must be defined
+#endif
+
+#ifndef Integer
+   #error Integer must be defined
+#endif
+
+namespace panda
+{
+   EXTERN template void Communication::toSlave(const Row<Integer>&, const int) const;
+   EXTERN template Row<Integer> Communication::fromMaster() const;
+   EXTERN template void Communication::toMaster(const Matrix<Integer>&) const;
+   EXTERN template Matrix<Integer> Communication::fromSlave(const int) const;
+}
+

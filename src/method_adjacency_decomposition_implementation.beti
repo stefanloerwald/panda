@@ -1,0 +1,25 @@
+
+//-------------------------------------------------------------------------------//
+// Author: Stefan Lörwald, Universität Heidelberg                                //
+// License: CC BY-NC 4.0 http://creativecommons.org/licenses/by-nc/4.0/legalcode //
+//-------------------------------------------------------------------------------//
+
+#ifndef EXTERN
+   #error EXTERN must be defined
+#endif
+
+#ifndef Integer
+   #error Integer must be defined
+#endif
+
+namespace panda
+{
+   namespace implementation
+   {
+      EXTERN template void adjacencyDecomposition<JobManager>(int, char**, const std::tuple<Matrix<Integer>, Names, Maps, Matrix<Integer>>&, tag::facet);
+      EXTERN template void adjacencyDecomposition<JobManager>(int, char**, const std::tuple<Matrix<Integer>, Names, Maps, Matrix<Integer>>&, tag::vertex);
+      EXTERN template void adjacencyDecomposition<JobManagerProxy>(int, char**, const std::tuple<Matrix<Integer>, Names, Maps, Matrix<Integer>>&, tag::facet);
+      EXTERN template void adjacencyDecomposition<JobManagerProxy>(int, char**, const std::tuple<Matrix<Integer>, Names, Maps, Matrix<Integer>>&, tag::vertex);
+   }
+}
+

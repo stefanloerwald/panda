@@ -1,0 +1,25 @@
+
+//-------------------------------------------------------------------------------//
+// Author: Stefan Lörwald, Universität Heidelberg                                //
+// License: CC BY-NC 4.0 http://creativecommons.org/licenses/by-nc/4.0/legalcode //
+//-------------------------------------------------------------------------------//
+
+#ifndef EXTERN
+   #error EXTERN must be defined
+#endif
+
+#ifndef CONSTRAINT_TYPE
+   #error CONSTRAINT_TYPE must be defined
+#endif
+
+namespace panda
+{
+   namespace input
+   {
+      namespace implementation
+      {
+         EXTERN template Matrix<int> constraints<CONSTRAINT_TYPE>(std::istream&, const Names&);
+      }
+   }
+}
+

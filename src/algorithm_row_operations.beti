@@ -1,0 +1,33 @@
+
+//-------------------------------------------------------------------------------//
+// Author: Stefan Lörwald, Universität Heidelberg                                //
+// License: CC BY-NC 4.0 http://creativecommons.org/licenses/by-nc/4.0/legalcode //
+//-------------------------------------------------------------------------------//
+
+#ifndef EXTERN
+   #error EXTERN must be defined
+#endif
+
+#ifndef Integer
+   #error Integer must be defined
+#endif
+
+EXTERN template std::ostream& operator<<(std::ostream&, const panda::Row<Integer>&);
+EXTERN template panda::Row<Integer>& operator+=(panda::Row<Integer>&, const panda::Row<Integer>&) noexcept;
+EXTERN template panda::Row<Integer> operator+(panda::Row<Integer>, const panda::Row<Integer>&);
+EXTERN template panda::Row<Integer>& operator*=(panda::Row<Integer>&, const Integer) noexcept;
+EXTERN template panda::Row<Integer> operator*(panda::Row<Integer>, const Integer);
+EXTERN template panda::Row<Integer> operator*(const Integer, panda::Row<Integer>);
+EXTERN template panda::Row<Integer>& operator-=(panda::Row<Integer>&, const panda::Row<Integer>&) noexcept;
+EXTERN template panda::Row<Integer> operator-(panda::Row<Integer>, const panda::Row<Integer>&);
+EXTERN template panda::Row<Integer>& operator/=(panda::Row<Integer>&, const Integer);
+EXTERN template panda::Row<Integer> operator/(panda::Row<Integer>, const Integer);
+EXTERN template Integer operator*(const panda::Row<Integer>&, const panda::Row<Integer>&) noexcept;
+
+EXTERN template void panda::algorithm::prettyPrint(std::ostream&, const panda::Row<Integer>&, const panda::Names&, const char*);
+EXTERN template void panda::algorithm::prettyPrintln(std::ostream&, const panda::Row<Integer>&, const panda::Names&, const char*);
+EXTERN template void panda::algorithm::printFractional(std::ostream&, const panda::Vertex<Integer>&);
+EXTERN template panda::Row<Integer> panda::algorithm::normalize<Integer>(panda::Row<Integer>, const panda::Equations<Integer>&);
+EXTERN template Integer panda::algorithm::gcd(const panda::Row<Integer>&) noexcept;
+EXTERN template Integer panda::algorithm::lcm(const panda::Row<Integer>&) noexcept;
+

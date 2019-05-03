@@ -1,0 +1,44 @@
+
+//-------------------------------------------------------------------------------//
+// Author: Stefan Lörwald, Universität Heidelberg                                //
+// License: CC BY-NC 4.0 http://creativecommons.org/licenses/by-nc/4.0/legalcode //
+//-------------------------------------------------------------------------------//
+
+#include <climits>
+#include <cstdint>
+
+#ifdef COMPILE_TEMPLATE_CAST
+   #define EXTERN
+#else
+   #define EXTERN extern
+#endif
+
+#ifndef NO_FLEXIBILITY
+   #if defined(INT16_MIN) && (INT16_MIN != INT_MIN)
+      #define Integer int16_t
+      #include "cast.beti"
+      #undef Integer
+   #endif
+   #if defined(INT32_MIN) && (INT32_MIN != INT_MIN)
+      #define Integer int32_t
+      #include "cast.beti"
+      #undef Integer
+   #endif
+   #if defined(INT64_MIN) && (INT64_MIN != INT_MIN)
+      #define Integer int64_t
+      #include "cast.beti"
+      #undef Integer
+   #endif
+   #include "big_integer.h"
+   #define Integer panda::BigInteger
+   #include "cast.beti"
+   #undef Integer
+   #include "safe_integer.h"
+   #define Integer panda::SafeInteger
+   #include "cast.beti"
+   #undef Integer
+#else
+#endif
+
+#undef EXTERN
+
