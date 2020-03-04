@@ -1,9 +1,12 @@
 ### Official website
 
 The official website for PANDA can be found here:
-https://www1.iwr.uni-heidelberg.de/groups/comopt/software/PANDA/https://www1.iwr.uni-heidelberg.de/groups/comopt/software/PANDA/
+http://comopt.ifi.uni-heidelberg.de/software/PANDA/
 
-This is an unofficial repository by the original author, solely for the purpose of having an archive of the software.
+### Note
+
+This is an unofficial repository, although by the original author, solely for the purpose of having an archive of the software.
+If you found any bug, please raise an issue.
 
 ### License
 
