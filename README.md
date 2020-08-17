@@ -45,7 +45,7 @@ docker run -i --rm -v"$(pwd)":/data panda panda /data/samples/panda_format/sampl
 docker build -t panda .
 ```
 
-#### Using the panda docker image on hub.docker.com
+#### Using the panda docker image on [hub.docker.com](https://hub.docker.com/r/pandacomopt/panda)
 
 ```
 docker pull pandacomopt/panda
