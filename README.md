@@ -19,6 +19,8 @@ For convenience there is a docker image available.
 
 ```
 docker run -i --rm -v"$(pwd)":/data panda panda /data/samples/panda_format/sample_1
+// does the same as panda samples/panda_format/sample_1
+// if you had installed panda manually
 ```
 
 Explanation of the above command:
@@ -39,15 +41,15 @@ docker run -i --rm -v"$(pwd)":/data panda panda /data/samples/panda_format/sampl
            run in interactive mode such that output will be printed to terminal
 ```
 
-#### Building the docker image manually:
-
-```
-docker build -t panda .
-```
-
 #### Using the panda docker image on [hub.docker.com](https://hub.docker.com/r/pandacomopt/panda)
 
 ```
 docker pull pandacomopt/panda
 docker tag pandacomopt/panda panda
+```
+
+#### Building the docker image manually:
+
+```
+docker build -t panda .
 ```
