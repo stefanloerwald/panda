@@ -159,7 +159,7 @@ bool panda::input::isWhitespace(std::istream& stream)
       return false;
    }
    const auto c = stream.peek();
-   return c == ' ' || c == '\t';
+   return c == ' ' || c == '\t' || c == '\r';
 }
 
 void panda::input::skipEndOfLine(std::istream& stream)
@@ -189,8 +189,8 @@ void panda::input::skipWhitespace(std::istream& stream)
 
 std::string panda::input::trimWhitespace(std::string string)
 {
-   string.erase(0, string.find_first_not_of(" \t")); // erases leading whitespace
-   string.erase(string.find_last_not_of(" \t") + 1); // erases trailing whitespace
+   string.erase(0, string.find_first_not_of(" \t\r")); // erases leading whitespace
+   string.erase(string.find_last_not_of(" \t\r") + 1); // erases trailing whitespace
    return string;
 }
 
