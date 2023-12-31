@@ -20,7 +20,7 @@ CONE_SECTION
 INEQUALITY_SECTION
 ```
 
-There are sample files available [here](TODO add link).
+There are sample files available [here](samples/).
 
 For a very technical description, start [here](TODO add link).
 
