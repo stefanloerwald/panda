@@ -75,7 +75,7 @@ Double description method is highly sensitive to input order. By default, the in
 ```
 #### Prior knowledge about polytope structure
 When transforming a V-description to an H-description with adjacency decomposition, it is possible to speed up the calculation by inserting prior knowledge about the facial structure of the polytope.
-You may do so by providing a file with an inequality section (see format requirements) and pass it via command line parameter `-k <filename>` / `--known-facets=<filename>`.
+You may do so by providing a file with an inequality section (see [format requirements](input_format.md)) and pass it via command line parameter `-k <filename>` / `--known-facets=<filename>`.
 #### Providing an input file
 A string in the list of command line parameters that does not match one of the options above is interpreted as file name. Examples:
 ```
