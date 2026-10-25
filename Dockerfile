@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:26.04 
 # Installation of build dependencies
 RUN apt-get update && apt-get install build-essential -y
 ENV DEBIAN_FRONTEND=noninteractive
