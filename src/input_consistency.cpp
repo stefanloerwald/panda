@@ -9,6 +9,7 @@
 #include <limits>
 #include <stdexcept>
 #include <string>
+#include <sstream>
 
 using namespace panda;
 
@@ -46,7 +47,9 @@ void panda::input::implementation::checkConsistency(const Inequalities<int>& ine
    rangeDimensionCheck(inequalities, dim, "Invalid input data: Inconsistent dimensions (an inequality is invalid).");
    if ( !names.empty() && names.size() + 1 != dim )
    {
-      throw std::invalid_argument("Invalid input data: The number of names does not match the dimension.");
+       std::stringstream stream;
+      stream << "Invalid input data: The number of names (" << names.size() << ") does not match the dimension (" << dim << ") (is supposed to be one less).";
+      throw std::invalid_argument(stream.str());
    }
    if ( dimension != std::numeric_limits<std::size_t>::max() && dim != dimension + 1 )
    {
@@ -67,7 +70,9 @@ void panda::input::implementation::checkConsistency(const ConvexHull<int>& conv,
    rangeDimensionCheck(maps, dim, "Invalid input data: Inconsistent dimensions (a map is invalid).");
    if ( !names.empty() && names.size() + 1 != dim )
    {
-      throw std::invalid_argument("Invalid input data: The number of names does not match the dimension.");
+       std::stringstream stream;
+      stream << "Invalid input data: The number of names (" << names.size() << ") does not match the dimension (" << dim << ") (is supposed to be one less).";
+      throw std::invalid_argument(stream.str());
    }
    if ( dimension != std::numeric_limits<std::size_t>::max() && dim != dimension + 1 )
    {
